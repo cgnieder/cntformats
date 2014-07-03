@@ -3,10 +3,9 @@
 % 
 %   A different way to read counters
 %
-% This package is part of the exsheets bundle
 % --------------------------------------------------------------------------
 % Clemens Niederberger
-% Web:    https://bitbucket.org/cgnieder/exsheets/
+% Web:    https://github.com/cgnieder/cntformats/
 % E-Mail: contact@mychemistry.eu
 % --------------------------------------------------------------------------
 % Copyright 2012-2014 Clemens Niederberger
@@ -23,13 +22,11 @@
 % 
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-% The cntformats package is part of the exsheets bundle
-% --------------------------------------------------------------------------
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-\def\@cntfmts@date{2013/10/11}
-\def\@cntfmts@version{v0.6}
+\def\@cntfmts@date{2014/07/03}
+\def\@cntfmts@version{v0.7}
 
 \ProvidesPackage{cntformats}[%
   \@cntfmts@date\space
@@ -38,111 +35,32 @@
 \RequirePackage{etoolbox,cnltx-base}
 % --------------------------------------------------------------------------
 % message handling
-\def\@cntfmts@error@message{%
-  For details have a look at the `exsheets' manual.}
+\newcommand*\@cntfmts@error@message{%
+  For details have a look at the `cntformats' manual.%
+}
 
 \cnltx@create@generic@message{@cntfmts}{cntformats}{Error}{\@cntfmts@error@message}
 \cnltx@create@generic@message{@cntfmts}{cntformats}{Warning}{}
 \cnltx@create@generic@message{@cntfmts}{cntformats}{WarningNoLine}{}
 \cnltx@create@generic@message{@cntfmts}{cntformats}{Info}{}
 
-\def\@cntfmts@err@already@defined#1{%
-  \@cntfmts@error{The counter `#1' already exists!}}
-\def\@cntfmts@err@unknown@counter#1{%
-  \@cntfmts@error{The counter `#1' is undefined!}}
-\def\@cntfmts@err@pattern@defined#1#2{%
-  \@cntfmts@error{The pattern `#2' for module `#1' is already defined!}}
-\def\@cntfmts@err@pattern@undefined#1#2{%
-  \@cntfmts@error{The pattern `#2' for module `#1' is undefined!}}
-
-% ----------------------------------------------------------------------------
-% tokenlist analyzing and manipulating
-%   if you happen to read this code and notice some obvious reasons why these
-%   macros shoudn't be used like this, please send me your improved version
-%   (seriously! But please explain why yours is better)
-% \long\def\@cntfmts@ifintl#1#2{%
-%   \def\@cntfmts@intl@tmpa##1#2{}%
-%   \expandafter\if\expandafter\relax\expandafter
-%   \detokenize\expandafter{\@cntfmts@intl@tmpa#1{}{}#2}\relax%
-%     \expandafter\@secondoftwo
-%   \else
-%     \expandafter\@firstoftwo
-%   \fi
-% }
-% \long\def\@cntfmts@ifintlcs#1{%
-%   \expandafter\@cntfmts@ifintl\expandafter{#1}}
-
-% \long\def\@cntfmts@replaceonceincs#1#2#3{%
-%   \@cntfmts@ifintlcs#1{#2}%
-%     {\@cntfmts@replace@once@incs#1{#2}{#3}}{}%
-% }
-% \long\def\@cntfmts@replace@once@incs#1#2#3{%
-%   \def\@cntfmts@replo@tmpa##1#2##2\q@stop{%
-%     \def#1{##1#3##2}}%
-%   \expandafter\@cntfmts@replo@tmpa#1\q@stop
-% }
-
-% \long\def\@cntfmts@replaceallin#1#2#3{%
-%   \def\@cntfmts@repla@tmpa{#1}%
-%   \@cntfmts@replaceonceincs\@cntfmts@repla@tmpa{#2}{#3}%
-%   \@cntfmts@ifintlcs\@cntfmts@repla@tmpa{#2}%
-%     {\expandafter\@cntfmts@replaceallin\expandafter{\@cntfmts@repla@tmpa}{#2}{#3}}%
-%     {\expandonce\@cntfmts@repla@tmpa}%
-% }
-% \long\def\@cntfmts@replaceallincs#1#2#3{%
-%   \@cntfmts@replaceonceincs#1{#2}{#3}%
-%   \@cntfmts@ifintlcs#1{#2}{\@cntfmts@replaceallincs#1{#2}{#3}}{}%
-% }
-
-% ----------------------------------------------------------------------------
-% expansion tools
-%   heavily inspired by expl3's \exp_args:N<spec> -- one might say: copied
-% \long\def\@cntfmts@getnextbraced#1#2#3{#2\@cntfmts@firstofone{#3{#1}}}
-% \long\def\@cntfmts@firstofone#1{#1}
-% \long\def\@cntfmts@braced@unexpanded#1\@cntfmts@firstofone#2#3{%
-%   #1\@cntfmts@firstofone{#2{#3}}}
-% \long\def\@cntfmts@braced@expandedonce#1\@cntfmts@firstofone#2#3{%
-%   \expandafter\@cntfmts@getnextbraced\expandafter{#3}{#1}{#2}}
-
-% \long\def\@cntfmts@expand@first{%
-%   \@cntfmts@braced@expandedonce
-%   \@cntfmts@firstofone}
-
-% \long\def\@cntfmts@expand@second{%
-%   \@cntfmts@braced@unexpanded
-%   \@cntfmts@braced@expandedonce
-%   \@cntfmts@firstofone}
-
-% \long\def\@cntfmts@expand@third{%
-%   \@cntfmts@braced@unexpanded
-%   \@cntfmts@braced@unexpanded
-%   \@cntfmts@braced@expandedonce
-%   \@cntfmts@firstofone}
-
-% ----------------------------------------------------------------------------
-% expandable commands with optional argument (and no mandatory)
-%   this is probably not very robust. If you know what you're doing you're
-%   probably able to define a better version yourself. If not: don't use this
-%   one!
-% \long\def\@cntfmts@isopt@#1[#2\q@marker#3#{%
-%   \if\relax\detokenize{#1#2}\relax
-%     \expandafter\@firstoftwo
-%   \else
-%     \expandafter\@secondoftwo
-%   \fi}
-% \long\def\@cntfmts@isopt#1#2#3{%
-%   \@cntfmts@isopt@#1\q@marker[\q@marker{#2#1}{#2[{#3}]{#1}}}
-
-% \long\def\@cntfmts@defwopt#1[#2]#3{%
-%   \long\def#1##1{\@cntfmts@isopt{##1}{\csuse{\@cntfmts@strip@bs#1@opt}}{#2}}%
-%   \long\csdef{\@cntfmts@strip@bs#1@opt}[##1]{#3}}
-
-% \def\@cntfmts@strip@bs{\expandafter\@gobble\string}
+\newrobustcmd*\@cntfmts@err@already@defined[1]{%
+  \@cntfmts@error{The counter `#1' already exists!}%
+}
+\newrobustcmd*\@cntfmts@err@unknown@counter[1]{%
+  \@cntfmts@error{The counter `#1' is undefined!}%
+}
+\newrobustcmd*\@cntfmts@err@pattern@defined[2]{%
+  \@cntfmts@error{The pattern `#2' for module `#1' is already defined!}%
+}
+\newrobustcmd*\@cntfmts@err@pattern@undefined[2]{%
+  \@cntfmts@error{The pattern `#2' for module `#1' is undefined!}%
+}
 
 % ----------------------------------------------------------------------------
 % #1: module
 % #2: counter
-\def\@cntfmts@def@counter@read#1#2#3{%
+\newrobustcmd*\@cntfmts@def@counter@read[3]{%
   \cnltx@expandargs(no)\csdef
     {@#1@read@#3@counter}%
     {\csname @#1@read@#2@counter\endcsname}%
@@ -152,7 +70,7 @@
 % #1: module
 % #2: counter
 % #3: id
-\newcommand*\@cntfmts@add@counter@pattern[3][cntfmts]{%
+\newrobustcmd*\@cntfmts@add@counter@pattern[3][cntfmts]{%
   \ifcsdef{c@#2}
     {}{\@cntfmts@err@unknown@counter{#2}}%
   \ifcsdef{@#1@#2@counter}
@@ -162,7 +80,7 @@
   \@cntfmts@def@counter@read{#1}{#2}{#3}%
 }
 
-\newcommand*\@cntfmts@add@counter@pattern@nostar[3][cntfmts]{%
+\newrobustcmd*\@cntfmts@add@counter@pattern@nostar[3][cntfmts]{%
   \@cntfmts@add@counter@pattern[#1]{#2}{#3}%
   \cnltx@expandargs(nno)\@cntfmts@create@read@counter{#1}{#2}{\csname c@#2\endcsname}%
 }
@@ -177,7 +95,7 @@
 % create pattern for a new counter
 % #1: counter
 % #2: id
-\newcommand*\@cntfmts@new@counter@pattern[3][cntfmts]{%
+\newrobustcmd*\@cntfmts@new@counter@pattern[3][cntfmts]{%
   \ifcsdef{the#2}
     {\@cntfmts@err@counter@defined{#2}}{}%
   \newcounter{#2}%
@@ -186,7 +104,7 @@
   \csdef{@#1@#2@counter}{}
 }
 
-\newcommand*\@cntfmts@new@counter@pattern@nostar[3][cntfmts]{%
+\newrobustcmd*\@cntfmts@new@counter@pattern@nostar[3][cntfmts]{%
   \@cntfmts@new@counter@pattern[#1]{#2}{#3}%
   \cnltx@expandargs(nno)\@cntfmts@create@read@counter{#1}{#2}{\csname c@#2\endcsname}%
 }
@@ -199,7 +117,7 @@
 \@onlypreamble\NewCounterPattern
 
 % renew pattern:
-\newcommand*\@cntfmts@renew@counter@pattern[3][cntfmts]{%
+\newrobustcmd*\@cntfmts@renew@counter@pattern[3][cntfmts]{%
   \ifcsdef{the#2}
     {}{\@cntfmts@err@unknown@counter{#2}}%
   \ifcsdef{@#1@#2@counter}{}
@@ -209,7 +127,7 @@
   \@cntfmts@def@counter@read{#1}{#2}{#3}%
 }
 
-\newcommand*\@cntfmts@renew@counter@pattern@nostar[3][cntfmts]{%
+\newrobustcmd*\@cntfmts@renew@counter@pattern@nostar[3][cntfmts]{%
   \@cntfmts@renew@counter@pattern[#1]{#2}{#3}%
   \cnltx@expandargs(nno)\@cntfmts@create@read@counter{#1}{#2}{\csname c@#2\endcsname}%
 }
@@ -228,7 +146,7 @@
 % #1: module
 % #2: counter
 % #3: internal command
-\def\@cntfmts@create@read@counter#1#2#3{%
+\newrobustcmd*\@cntfmts@create@read@counter[3]{%
   \expandafter\newexpandablecmd
   \expandafter*\csname @#1@read@#2@counter\endcsname[1][]{%
     \ifblank{##1}
@@ -245,7 +163,7 @@
 % pattern formats
 % #1: key
 % #2: number presentation command like \@alph
-\def\@cntfmts@new@pattern@format#1#2{%
+\newrobustcmd*\@cntfmts@new@pattern@format[2]{%
   \csdef{@cntfmts@counter@type@#1}{#2}%
 }
 
@@ -259,13 +177,13 @@
 % #1: module
 % #2: list
 % #3: pattern
-\def\@cntfmts@read@counter@pattern#1#2#3{%
+\newrobustcmd*\@cntfmts@read@counter@pattern[3]{%
   \def\@cntfmts@parsed@pattern{#3\@empty}%
   \forlistcsloop{\@cntfmts@replace@pattern{#1}}{#2}%
 }
 % #1: module
 % #2: pattern-key
-\def\@cntfmts@replace@pattern#1#2{%
+\newrobustcmd*\@cntfmts@replace@pattern[2]{%
   \cnltx@replace@all\@cntfmts@parsed@pattern
     {#2}{\csuse{@#1@read@#2@counter}}%
 }
@@ -283,13 +201,13 @@
 % #2: save interpretation in
 % #3: pattern
 % #4: module
-\newcommand*\@cntfmts@save@counter@pattern[4]{%
+\newrobustcmd*\@cntfmts@save@counter@pattern[4]{%
   \@cntfmts@read@counter@pattern{#4}{@#4@counter@ids}{#3}%
   \let#2\@cntfmts@parsed@pattern
   \def#1{#3}%
 }
 
-\newcommand*\@cntfmts@esave@counter@pattern[4]{%
+\newrobustcmd*\@cntfmts@esave@counter@pattern[4]{%
   \@cntfmts@read@counter@pattern{#4}{@#4@counter@ids}{#3}%
   \edef#2{\@cntfmts@parsed@pattern}%
   \def#1{#3}%
@@ -346,4 +264,10 @@
 2013/10/11 v0.6     - use my `cnltx-base' package for the programming tools it
                       provides; this allows to get rid of the artefacts in the
                       expanded patterns
+2014/07/03 v0.7     - remove package from the `exsheets' bundle and distribute
+                      it as package of its own
+                    - robustify non-expandably commands that weren't defined
+                      robust, yet
+                    - replace \def with \newcommand or \newrobustcmd where
+                      possible
 

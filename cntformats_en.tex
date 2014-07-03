@@ -12,7 +12,7 @@
 % Web:    https://bitbucket.org/cgnieder/exsheets/
 % E-Mail: contact@mychemistry.eu
 % --------------------------------------------------------------------------
-% Copyright 2011-2014 Clemens Niederberger
+% Copyright 2012-2014 Clemens Niederberger
 % 
 % This work may be distributed and/or modified under the
 % conditions of the LaTeX Project Public License, either version 1.3
@@ -26,8 +26,6 @@
 % 
 % The Current Maintainer of this work is Clemens Niederberger.
 % --------------------------------------------------------------------------
-% The translations package is part of the exsheets bundle
-% --------------------------------------------------------------------------
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
@@ -39,11 +37,7 @@
   authors  = Clemens Niederberger ,
   email    = {contact@mychemistry.eu} ,
   url      = {https://bitbucket.org/cgnieder/exsheets/} ,
-  info     = {%
-    {\small part of the \href{exsheets_en.pdf}{\ExSheets}
-      bundle}\\[\baselineskip]
-    a different way to read counters%
-  } ,
+  info     = {A different way to read counters} ,
   add-cmds = {
     @cntfmts@parsed@pattern, AddCounterPattern, 
     eSaveCounterPattern,  
@@ -102,6 +96,10 @@ existed as part of the \ExSheets\ package.  I can't recall why I came up with
 the idea in the first place or why I originally wanted a new syntax for
 formatting the \code{question} counter.  I am also not convinced any more that
 it is a good idea.  Anyway, here we are.
+
+Until an including v0.6\changedversion{0.7} \cntformats{} used to be part of
+the \ExSheets{} bundle.  Since version 0.7 it is distributed as a package of
+its own.
 
 \section{License and Requirements}\label{sec:license}
 \license
