@@ -226,7 +226,12 @@ Now let's see a short example that hopefully explains what the macros do:
 \end{example}
 You can see that somehow an additional \cs*{@empty} found its way into the
 interpreted pattern. This is due to the fact that reading optional arguments
-expandably isn't easy and must have some safety net.
+expandably isn't easy and must have some safety net.  In this case looking for
+an optional argument is done by reading the token following the command as
+argument.  If there is no option then \cs*{@empty} is found so no other tokens
+provided by users get read which might otherwise lead to strange
+effects/outcome/errors\footnote{Imagine for example there would be \emph{no}
+  token following the command}.
 
 \section{Predefined and New Patterns and Format Keys}
 \subsection{Predefined Patterns and Format Keys}
