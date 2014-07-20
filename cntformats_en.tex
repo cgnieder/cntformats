@@ -9,7 +9,7 @@
 % 
 % --------------------------------------------------------------------------
 % Clemens Niederberger
-% Web:    https://bitbucket.org/cgnieder/exsheets/
+% Web:    https://github.com/cgnieder/cntformats/
 % E-Mail: contact@mychemistry.eu
 % --------------------------------------------------------------------------
 % Copyright 2012-2014 Clemens Niederberger
@@ -36,7 +36,7 @@
   package  = {cntformats} ,
   authors  = Clemens Niederberger ,
   email    = {contact@mychemistry.eu} ,
-  url      = {https://bitbucket.org/cgnieder/exsheets/} ,
+  url      = {https://github.com/cgnieder/cntformats/} ,
   info     = {A different way to read counters} ,
   add-cmds = {
     @cntfmts@parsed@pattern, AddCounterPattern, 
@@ -60,8 +60,7 @@
 
 \defbibheading{bibliography}[\bibname]{\addsec{#1}}
 
-\newpackagename\ExSheets{ExSheets}
-\def\at{\cnltxat}
+\newcommand*\at{\cnltxat}
 
 \usepackage[biblatex]{embrac}[2012/06/29]
   \ChangeEmph{[}[,.02em]{]}[.055em,-.08em]
@@ -78,28 +77,28 @@
 \NewPatternFormat{o}{\ordinalnum}
 \newcommand*\myoddnumber[1]{\the\numexpr2*(#1)-1\relax}
 \NewPatternFormat{x}{\myoddnumber}
-\NewCounterPattern{testa}{ta}
+\NewCounterPattern{test}{t}
 
 \begin{document}
 
 \section{Motivation}
 \cntformats\ provides a way to format counters with what I will call patterns.
 This does not in any way effect the usual \LaTeXe\ way of treating counters
-and does not use \cs*{the\meta{counter}} nor is it affected by the redefinition of
-them.
+and does not use \cs*{the\meta{counter}} nor is it affected by the
+redefinition of them.
 
 This package is aimed at package or class authors and probably not very useful
 for document authors.
 
 When I first had the idea for this package the idea of what it does already
-existed as part of the \ExSheets\ package.  I can't recall why I came up with
-the idea in the first place or why I originally wanted a new syntax for
-formatting the \code{question} counter.  I am also not convinced any more that
-it is a good idea.  Anyway, here we are.
+existed as part of the \pkg{exsheets}~\cite{bnd:exsheets} package.  I can't
+recall why I came up with the idea in the first place or why I originally
+wanted a new syntax for formatting the \code{question} counter.  I am also not
+convinced any more that it is a good idea.  Anyway, here we are.
 
-Until an including v0.6\changedversion{0.7} \cntformats{} used to be part of
-the \ExSheets{} bundle.  Since version 0.7 it is distributed as a package of
-its own.
+Until and including v0.6\changedversion{0.7} \cntformats{} used to be part of
+the \pkg{exsheets} bundle.  Since version 0.7 it is distributed as a package
+of its own.
 
 \section{License and Requirements}\label{sec:license}
 \license
@@ -155,8 +154,8 @@ In order to make counters known to \cntformats\ the following commands are used:
     \cntformats\ and assign the pattern \meta{pattern} to it.
   \command{ReadCounterFrom}[\oarg{module}\marg{counter}\marg{internal cmd}]
     If you use one of the commands above with the starred version the number
-    for the pattern is not automatically fetched from the internal
-    \cs*{c@\meta{counter}}.  This can now be assigned with
+    for the pattern is \emph{not automatically fetched} from the internal
+    \cs*{c@\meta{counter}}.  This can (and must) now be assigned with
     \cs{ReadCounterFrom}  where \meta{internal cmd} is the macro that holds
     the number.
 \end{commands}
@@ -191,12 +190,13 @@ There are a number of macros that allow different aspects of usage.
 \end{commands}
 
 The optional argument \meta{module} should be specific for a package, say, so
-that different patterns for the \code{section} for example don't interfer with
-each other.  If you leave the argument the default module \code{cntfmts} is
-used.
+that different patterns for the \code{section} counter for example don't
+interfer with each other.  This means: \cs{ReadCounterPattern} and friends
+\emph{only} read the patterns known to the specified module!  If you leave the
+argument the default module \code{cntfmts} is used.
 
-The \ExSheets\ packages uses the commands with the module \code{exsheets}.
-You can find the following lines in \ExSheets' code:
+The \pkg{exsheets} package uses the commands with the module \code{exsheets}.
+You can find the following lines in \pkg{exsheets}' code:
 \begin{sourcecode}
   \AddCounterPattern*[exsheets]{section}{se}
   \ReadCounterFrom[exsheets]{section} \l__exsheets_counter_sec_int
@@ -204,23 +204,39 @@ You can find the following lines in \ExSheets' code:
   \ReadCounterFrom[exsheets]{question} \l__exsheets_counter_qu_int
 \end{sourcecode}
 
-Now let's see a short example that hopefully explains what the macros do:
+Another example would be the \pkg{tasks} package~\cite{pkg:tasks}:
+\begin{sourcecode}
+  \NewCounterPattern*[tasks]{task}{tsk}
+  \ReadCounterFrom[tasks]{task} \g__tasks_int
+\end{sourcecode}
+
+In fact \pkg{exsheets} loads the \pkg{tasks} package and also does the
+following
+\begin{sourcecode}
+  \AddCounterPattern*[tasks]{question}{qu}
+  \ReadCounterFrom[tasks]{question}\l__exsheets_counter_qu_int
+\end{sourcecode}
+so \pkg{tasks} knows about the question counter and uses the same pattern as
+\pkg{exsheets} does.
+
+Now let's see a short example that hopefully explains what the other macros
+do:
 \begin{example}
   % preamble
-  % \NewCounterPattern{testa}{ta}
-  \setcounter{testa}{11}
-  \ReadCounterPattern{ta}
-  \ReadCounterPattern{ta[a]} \\
+  % \NewCounterPattern{test}{t}
+  \setcounter{test}{11}
+  \ReadCounterPattern{t}
+  \ReadCounterPattern{t[a]} \\
   \ttfamily\makeatletter
   \meaning\@cntfmts@parsed@pattern
   
   \bigskip
-  \SaveCounterPattern\tmpa\tmpb{ta[a]}
+  \SaveCounterPattern\tmpa\tmpb{t[a]}
   \meaning\tmpa \\
   \meaning\tmpb
   
   \bigskip
-  \eSaveCounterPattern\tmpa\tmpb{ta[a]}
+  \eSaveCounterPattern\tmpa\tmpb{t[a]}
   \meaning\tmpa \\
   \meaning\tmpb
 \end{example}
@@ -231,7 +247,21 @@ an optional argument is done by reading the token following the command as
 argument.  If there is no option then \cs*{@empty} is found so no other tokens
 provided by users get read which might otherwise lead to strange
 effects/outcome/errors\footnote{Imagine for example there would be \emph{no}
-  token following the command}.
+  token following the command -- nasty error messages could follow.}.  On the
+other hand the grabbing of the next token can lead to spaces after the pattern
+being ignored, see the next example: if there is no optional argument then the
+next token is grabbed ignoring the spaces as is normal for a \TeX{} macro.
+The next example demonstrates this.
+
+A word of caution: although I used a one-letter pattern in the above example I
+would not recommend this.  The pattern should consist of two or more
+characters otherwise it might get inconvenient hiding the characters that you
+\emph{don't} want replaced:
+\begin{example}
+  \setcounter{test}{3}
+  Where is the first space: \ReadCounterPattern{t t[r] t}?\par
+  \ReadCounterPattern{every instance of the letter t{} is replaced}
+\end{example}
 
 \section{Predefined and New Patterns and Format Keys}
 \subsection{Predefined Patterns and Format Keys}
@@ -297,17 +327,17 @@ in the preamble:
   \NewPatternFormat{o}{\ordinalnum}
   \NewPatternFormat{x}{\myoddnumber}
 
-  \newcounter{testa}
-  \NewCounterPattern{testa}{ta}
-  \setcounter{testa}{4}
+  \newcounter{test}
+  \NewCounterPattern{test}{t}
+  \setcounter{test}{4}
 \end{sourcecode}
 
 Then we can use the new pattern and the new formats as
-follows:\setcounter{testa}{4}
+follows:\setcounter{test}{4}
 \begin{example}
-  \ReadCounterPattern{ta[aa]}
-  \ReadCounterPattern{ta[o]}
-  \ReadCounterPattern{ta[x]}
+  \ReadCounterPattern{t[aa]}
+  \ReadCounterPattern{t[o]}
+  \ReadCounterPattern{t[x]}
 \end{example}
 
 \end{document}
