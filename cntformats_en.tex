@@ -82,9 +82,9 @@
 \begin{document}
 
 \section{Motivation}
-\cntformats\ provides a way to format counters with what I will call patterns.
-This does not in any way effect the usual \LaTeXe\ way of treating counters
-and does not use \cs*{the\meta{counter}} nor is it affected by the
+\cntformats{} provides a way to format counters with what I will call
+patterns.  This does not in any way effect the usual \LaTeXe{} way of treating
+counters and does not use \cs*{the\meta{counter}} nor is it affected by the
 redefinition of them.
 
 This package is aimed at package or class authors and probably not very useful
@@ -103,7 +103,7 @@ of its own.
 \section{License and Requirements}\label{sec:license}
 \license
 
-\cntformats\ requires the \needpackage{etoolbox} package~\cite{pkg:etoolbox}
+\cntformats{} requires the \needpackage{etoolbox} package~\cite{pkg:etoolbox}
 and the \pkg*{cnltx-base}\footnote{\CTANurl{cnltx}} package~\cite{bnd:cnltx}.
 
 \section{Example}
@@ -122,7 +122,7 @@ can have optional arguments that specify the format:
 \code{A} stands for \cs*{Alph} and \code{r} for \cs*{roman}.  A complete list
 can be found in table~\ref{tab:predefined:formats} on
 page~\pageref{tab:predefined:formats}.  As you can see you can insert
-arbitrary other tokens in a pattern that won't be changed. It is important to
+arbitrary other tokens in a pattern that won't be changed.  It is important to
 notice, though, that the patterns are only replaced if they're \emph{not}
 placed in a braced group!
 
@@ -144,14 +144,14 @@ supplied by a user setting an option \ldots
 In the following description of the available commands the symbol
 \textcolor{expandable}{\expandablesign} means that the command is expandable.
 
-In order to make counters known to \cntformats\ the following commands are used:
+In order to make counters known to \cntformats{} the following commands are used:
 \begin{commands}
   \command{AddCounterPattern}[\sarg\oarg{module}\marg{counter}\marg{pattern}]
     This command will make the (existing) counter \meta{counter} known to
-    \cntformats\ and assign the pattern \meta{pattern} to it.
+    \cntformats{} and assign the pattern \meta{pattern} to it.
   \command{NewCounterPattern}[\sarg\oarg{module}\marg{counter}\marg{pattern}]
     This command will create a new counter \meta{counter}, make it known to
-    \cntformats\ and assign the pattern \meta{pattern} to it.
+    \cntformats{} and assign the pattern \meta{pattern} to it.
   \command{ReadCounterFrom}[\oarg{module}\marg{counter}\marg{internal cmd}]
     If you use one of the commands above with the starred version the number
     for the pattern is \emph{not automatically fetched} from the internal
@@ -241,7 +241,7 @@ do:
   \meaning\tmpb
 \end{example}
 You can see that somehow an additional \cs*{@empty} found its way into the
-interpreted pattern. This is due to the fact that reading optional arguments
+interpreted pattern.  This is due to the fact that reading optional arguments
 expandably isn't easy and must have some safety net.  In this case looking for
 an optional argument is done by reading the token following the command as
 argument.  If there is no option then \cs*{@empty} is found so no other tokens
@@ -265,7 +265,7 @@ characters otherwise it might get inconvenient hiding the characters that you
 
 \section{Predefined and New Patterns and Format Keys}
 \subsection{Predefined Patterns and Format Keys}
-\cntformats\ predefines a number of pattern keys. These are listed in
+\cntformats{} predefines a number of pattern keys. These are listed in
 table~\ref{tab:predefined:patterns}.
 
 \subsection{New Patterns and Format Keys}
@@ -296,6 +296,7 @@ you can add own formats.
         subsection    & sse \\
         subsubsection & ssse \\
         paragraph     & pg \\
+        subparagraph  & spg \\
      \bottomrule
     \end{tabular}
   \end{minipage}
@@ -317,8 +318,8 @@ you can add own formats.
   \end{minipage}
 \end{table}
 
-Here are now a few examples of possible new patterns. Suppose the following code
-in the preamble:
+Here are now a few examples of possible new patterns.  Suppose the following
+code in the preamble:
 \begin{sourcecode}
   \usepackage{alphalph,fmtcount}
   \newcommand*\myoddnumber[1]{\the\numexpr2*(#1)-1\relax}

@@ -25,8 +25,8 @@
 % If you have any ideas, questions, suggestions or bugs to report, please
 % feel free to contact me.
 % --------------------------------------------------------------------------
-\def\@cntfmts@date{2014/07/20}
-\def\@cntfmts@version{v0.7}
+\def\@cntfmts@date{2014/08/18}
+\def\@cntfmts@version{v0.7a}
 
 \ProvidesPackage{cntformats}[%
   \@cntfmts@date\space
@@ -58,6 +58,15 @@
 }
 
 % ----------------------------------------------------------------------------
+\newcommand*\@cntfmts@ifcounter[1]{%
+  \ifboolexpe
+    {
+      test {\ifcsdef{c@#1}} and
+      test {\ifcsdef{the#1}}
+    }%
+}
+
+% ----------------------------------------------------------------------------
 % #1: module
 % #2: counter
 \newrobustcmd*\@cntfmts@def@counter@read[3]{%
@@ -71,7 +80,7 @@
 % #2: counter
 % #3: id
 \newrobustcmd*\@cntfmts@add@counter@pattern[3][cntfmts]{%
-  \ifcsdef{c@#2}
+  \@cntfmts@ifcounter{#2}
     {}{\@cntfmts@err@unknown@counter{#2}}%
   \ifcsdef{@#1@#2@counter}
     {\@cntfmts@err@pattern@defined{#1}{#2}}
@@ -95,30 +104,30 @@
 % create pattern for a new counter
 % #1: counter
 % #2: id
-\newrobustcmd*\@cntfmts@new@counter@pattern[3][cntfmts]{%
-  \ifcsdef{the#2}
-    {\@cntfmts@err@counter@defined{#2}}{}%
+\newrobustcmd*\@cntfmts@new@counter@pattern@custom[3][cntfmts]{%
+  \@cntfmts@ifcounter{#2}
+    {\@cntfmts@err@already@defined{#2}}{}%
   \newcounter{#2}%
   \listcsadd{@#1@counter@ids}{#3}%
   \@cntfmts@def@counter@read{#1}{#2}{#3}%
   \csdef{@#1@#2@counter}{}
 }
 
-\newrobustcmd*\@cntfmts@new@counter@pattern@nostar[3][cntfmts]{%
-  \@cntfmts@new@counter@pattern[#1]{#2}{#3}%
+\newrobustcmd*\@cntfmts@new@counter@pattern@standard[3][cntfmts]{%
+  \@cntfmts@new@counter@pattern@custom[#1]{#2}{#3}%
   \cnltx@expandargs(nno)\@cntfmts@create@read@counter{#1}{#2}{\csname c@#2\endcsname}%
 }
 
 \newrobustcmd*\NewCounterPattern{%
   \@ifstar
-    {\@cntfmts@new@counter@pattern}
-    {\@cntfmts@new@counter@pattern@nostar}%
+    {\@cntfmts@new@counter@pattern@custom}
+    {\@cntfmts@new@counter@pattern@standard}%
 }
 \@onlypreamble\NewCounterPattern
 
 % renew pattern:
 \newrobustcmd*\@cntfmts@renew@counter@pattern[3][cntfmts]{%
-  \ifcsdef{the#2}
+  \@cntfmts@ifcounter{#2}
     {}{\@cntfmts@err@unknown@counter{#2}}%
   \ifcsdef{@#1@#2@counter}{}
     {\@cntfmts@err@pattern@undefined{#1}{#2}}%
@@ -237,15 +246,17 @@
 \NewPatternFormat{r}{\@roman}
 \NewPatternFormat{R}{\@Roman}
 
-\ifdef\c@paragraph
+\@cntfmts@ifcounter{subparagraph}
+  {\AddCounterPattern{subparagraph}{spg}}{}
+\@cntfmts@ifcounter{paragraph}
   {\AddCounterPattern{paragraph}{pg}}{}
-\ifdef\c@subsubsection
+\@cntfmts@ifcounter{subsubsection}
   {\AddCounterPattern{subsubsection}{ssse}}{}
-\ifdef\c@subsection
+\@cntfmts@ifcounter{subsection}
   {\AddCounterPattern{subsection}{sse}}{}
-\ifdef\c@section
+\@cntfmts@ifcounter{section}
   {\AddCounterPattern{section}{se}}{}
-\ifdef\c@chapter
+\@cntfmts@ifcounter{chapter}
   {\AddCounterPattern{chapter}{ch}}{}
 
 \endinput
@@ -266,8 +277,9 @@
                       expanded patterns
 2014/07/20 v0.7     - remove package from the `exsheets' bundle and distribute
                       it as package of its own
-                    - robustify non-expandably commands that weren't defined
+                    - robustify non-expandable commands that weren't defined
                       robust, yet
                     - replace \def with \newcommand or \newrobustcmd where
                       possible
+2014/08/18 v0.7a    - bug fix in \@cntfmts@new@counter@pattern
 
